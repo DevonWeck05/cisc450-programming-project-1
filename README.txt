@@ -9,15 +9,6 @@ What we actually need to do:
     The server will "have possession" of a file that the client wants to recieve. This file will be called test.txt or something (maybe requested_file.txt is better)
     The client is requesting the test.txt file from the server and it will be transfered over TCP as a series of packets
     The client writes the data from these packets into a file called out.txt (maybe recieved_file.txt is a better name)
-    
-    Server:
-        - Creates a listening socket
-        - Waits for a client
-        - Prints nothing and just waits until there is a client
-
-    Client:
-        - Asks for something like: "Enter Filename: "
-        - 
 
 Road Map: 
     Step 1: Make all necessary files
@@ -90,3 +81,29 @@ Road Map:
         Make sure we make a detailed README outlined by "Submission Guidlines"
         Make sure it runs on go and the course system
         Zip up all the files and submit
+
+Required includes we need to do this:
+    #include <sys/types.h>
+    #include <sys/socket.h>
+    #include <netinet/in.h>
+    #include <arpa/inet.h>
+
+    These are built in and the system just does it.
+    It gives us access to socket(), bind(), listen(), accept(), connect(), send(), recv()
+    If need more information you can see the man pages about them
+
+This is a minimum "toy" server example:
+    int sock = socket(AF_INET, SOCK_STREAM, 0);
+
+    struct sockaddr_in addr;
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(PORT);
+    addr.sin_addr.s_addr = INADDR_ANY;
+
+    bind(sock, (struct sockaddr*)&addr, sizeof(addr));
+    listen(sock, 1);
+
+    int client_sock = accept(sock, NULL, NULL);
+Copy this code into AI and ask what is happening on each line
+This is just the start of server.c that establishes a TCP connection between the client and server after a client requests a connection
+

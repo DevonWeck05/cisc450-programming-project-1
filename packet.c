@@ -6,7 +6,7 @@
 #include <arpa/inet.h> // htons() and ntohs()
 #include <stdio.h> // error printing
 
-// Keep sending until all bytes are sent
+// Send all len bytes and is only used by send_packet()
 int send_all(int sock, const void *buf, size_t len){
     size_t total_sent = 0;
     const char *p = buf;
@@ -35,6 +35,7 @@ int send_all(int sock, const void *buf, size_t len){
     return 0; // no errors
 }
 
+// Formats the header and data and then sends the packet using send_all()
 int send_packet(int sock, uint16_t seq, uint16_t count, const char *data){
     // convert to big endian so network TCP can read properly
     uint16_t count_net = htons(count);
@@ -55,6 +56,8 @@ int send_packet(int sock, uint16_t seq, uint16_t count, const char *data){
     return 0;
 }
 
+
+// Receive all len bytes and is only used by recv_packet()
 int recv_exact(int sock, void *buf, size_t len){
     size_t total_received = 0;
     char *p = buf;
@@ -83,6 +86,7 @@ int recv_exact(int sock, void *buf, size_t len){
     return 0; // no erros
 }
 
+// Formats incoming packets and stores it
 int recv_packet(int sock, uint16_t *seq, uint16_t *count, char *data){
     // make space for recieving header
     unsigned char header[4];
@@ -90,16 +94,16 @@ int recv_packet(int sock, uint16_t *seq, uint16_t *count, char *data){
     // receive the header and error if error
     if (recv_exact(sock, header, 4) < 0) return -1;
 
-    // copy the info in header out of header
+    // copy the info in header out of header and back into our count and seq
     uint16_t count_net, seq_net;
     memcpy(&count_net, header, 2);
     memcpy(&seq_net, header + 2, 2);
 
-    // convert back to little endian so our machine can read it properly
+    // convert back to little endian so our machine can read it properly and store it
     *count = ntohs(count_net);
     *seq = ntohs(seq_net);
 
-    // revieve the data portion
+    // revieve the data portion and put it in the pointer to data
     if (*count > 0) {
         if (recv_exact(sock, data, *count) < 0) return -1;
     }

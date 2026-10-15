@@ -15,8 +15,9 @@ typedef struct {
 } PacketHeader;
 
 int send_all(int sock, const void *buf, size_t len);
-int recv_exact(int sock, void *buf, size_t len);
 int send_packet(int sock, uint16_t seq, uint16_t count, const char *data);
+
+int recv_exact(int sock, void *buf, size_t len);
 int recv_packet(int sock, uint16_t *seq, uint16_t *count, char *data);
 
 #endif

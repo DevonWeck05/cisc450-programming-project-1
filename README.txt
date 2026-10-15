@@ -128,4 +128,9 @@ This is used for converting from little endian to big endian systems
     so we need to conver it back and forth between big endian and little endian
         ensures data is preserved and interpreted correctly
 
+Note: 
+    we do not need to use this on the data because it is just a sequence of bytes
+    the seq and count are 2 bytes each, so the order of the bytes mater
+    the data is broken up into single bytes, so endianness doesnt matter
+
 =======================================================

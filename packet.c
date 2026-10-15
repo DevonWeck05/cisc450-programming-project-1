@@ -37,19 +37,34 @@ int recv_exact(int sock, void *buf, size_t len){
 
 int send_packet(int sock, uint16_t seq, uint16_t count, const char *data){
     // convert to big endian so network TCP can read properly
-    count_net = htons(count);
-    seq_net = htons(seq);
+    uint16_t count_net = htons(count);
+    uint16_t seq_net = htons(seq);
 
-    send_all(sock, header, 4);
+    unsigned char header[4];
+    memcpy(header, &count_net, 2);
+    memcpy(header + 2, &seq_net, 2);
 
-    if (count > 0) send_all(sock, data, count);
+    if (send_all(sock, header, 4) < 0) return -1;
+    if (count > 0) send_all(sock, data, count); return -1;
     
     return 0;
 }
 
 int recv_packet(int sock, uint16_t *seq, uint16_t *count, char *data){
-    recv_exact(sock, header, 4);
+    unsigned char header[4];
 
-    count_net = 
+    if (recv_exact(sock, header, 4) < 0) return -1;
 
+    uint16_t count_net, seq_net;
+    memcpy(&count_net, header, 2);
+    memcpy(&seq_net, header + 2, 2);
+
+    *count = ntohs(count_net);
+    *seq   = ntohs(seq_net);
+
+    if (*count > 0) {
+        if (recv_exact(sock, data, *count) < 0) return -1;
+    }
+
+    return 0;
 }

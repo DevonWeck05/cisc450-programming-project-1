@@ -2,6 +2,8 @@ Devon Weckherlen and Achilles Demerutis
 
 This will just be a note doc until we make the actual readme
 
+=======================================================
+
 What we actually need to do:
     To run the program you open 2 terminals: one for the client and one for the server
         Ex: ./server to start the server and then ./client to start the client after compiling
@@ -9,6 +11,8 @@ What we actually need to do:
     The server will "have possession" of a file that the client wants to recieve. This file will be called test.txt or something (maybe requested_file.txt is better)
     The client is requesting the test.txt file from the server and it will be transfered over TCP as a series of packets
     The client writes the data from these packets into a file called out.txt (maybe recieved_file.txt is a better name)
+
+=======================================================
 
 Road Map: 
     Step 1: Make all necessary files
@@ -82,6 +86,8 @@ Road Map:
         Make sure it runs on go and the course system
         Zip up all the files and submit
 
+=======================================================
+
 Required includes we need to do this:
     #include <sys/types.h>
     #include <sys/socket.h>
@@ -91,6 +97,8 @@ Required includes we need to do this:
     These are built in and the system just does it.
     It gives us access to socket(), bind(), listen(), accept(), connect(), send(), recv()
     If need more information you can see the man pages about them
+
+=======================================================
 
 This is a minimum "toy" server example:
     int sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -107,3 +115,17 @@ This is a minimum "toy" server example:
 Copy this code into AI and ask what is happening on each line
 This is just the start of server.c that establishes a TCP connection between the client and server after a client requests a connection
 
+=======================================================
+
+htons() => host to network short
+    - Convert a 16‑bit integer from your machine’s byte order → network byte order.
+ntohs() => network to host short
+    - Convert a 16‑bit integer from network byte order → your machine’s byte order.
+
+This is used for converting from little endian to big endian systems
+    Networks use Big endian
+    Basically all of the client machines use little endian
+    so we need to conver it back and forth between big endian and little endian
+        ensures data is preserved and interpreted correctly
+
+=======================================================

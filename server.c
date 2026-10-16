@@ -65,7 +65,38 @@ int main() {
     }
     printf("Client connected!\n");
 
+    // Buffer for filename
+    char filename[81];   // 80 bytes + null terminator
+    uint16_t seq, count;
 
+    /*
+        Receive the filename packet (seq should be 0)
+        filename gets passed in as the data field for recv_packet
+        using pointer logic:
+            filename will have the name of the file
+            seq will have the seq number of the packet 
+            count will have the specified number of bytes in the data field of the packet
+    */
+    if (recv_packet(client_sock, &seq, &count, filename) < 0) {
+        fprintf(stderr, "Error receiving filename packet\n");
+        close(client_sock);
+        close(sock);
+        exit(1);
+    }
+
+    // Null-terminate the filename (client sends no '\0')
+    filename[count] = '\0';
+    printf("Filename received: %s\n", filename);
+
+    // Open the requested file
+    FILE *fp = fopen(filename, "r");
+    if (!fp) {
+        fprintf(stderr, "Could not open file: %s\n", filename);
+        close(client_sock);
+        close(sock);
+        exit(1);
+    }
+    printf("File opened successfully.\n");
 
     // Close connection
     close(client_sock);

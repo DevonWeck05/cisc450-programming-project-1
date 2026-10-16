@@ -65,9 +65,7 @@ int main() {
     }
     printf("Client connected!\n");
 
-    // =========================================
-    // REST OF SENDING PACKET LOGIC WILL GO HERE
-    // =========================================
+
 
     // Close connection
     close(client_sock);

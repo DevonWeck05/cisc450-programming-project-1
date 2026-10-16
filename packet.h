@@ -2,6 +2,7 @@
 #define PACKET_H
 
 #include <stdint.h>
+#include <stddef.h>
 
 // Max bytes in a datapacket
 #define MAX_DATA 80

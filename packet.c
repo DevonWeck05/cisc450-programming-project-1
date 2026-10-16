@@ -1,4 +1,5 @@
 #include "packet.h"
+#include <stddef.h> // size_t
 #include <stdint.h> // uint16_t => int that is 16 bits, or 2 bytes and unsigned
 #include <unistd.h> // read(), write()
 #include <sys/socket.h> // send(), recv()
@@ -71,7 +72,7 @@ int recv_exact(int sock, void *buf, size_t len){
                 ensures you never recieve more than what’s left
             0: flags but there is none
         */
-        ssize_t n = recv(sock, p + total_received, len - total_received);
+        ssize_t n = recv(sock, p + total_received, len - total_received, 0);
         if (n < 0) {
             perror("recv");
             return -1; // error

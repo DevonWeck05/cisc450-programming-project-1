@@ -1,8 +1,8 @@
 #include "packet.h"
 #include <stdio.h> // prints and file i/o
-#include <stdlib.h> // exiton errors
+#include <stdlib.h> // exit on errors
 #include <unistd.h> // closing sockets
-#include <string.h> // memcpy packet headers
+#include <string.h> // NULL and strlen
 #include <arpa/inet.h> // htons and ntohs and IPv4 addresses
 #include <sys/socket.h> // socket/bind/listen/accept/send/recv
 
@@ -11,9 +11,10 @@
 int main() {
     /*
         Create socket
-        AF_INET: Tell OS I want an IPv4 socket
-        SOCK_STREAM: Tell OS I want reliable data transfer => TCP socket
-        0: use default protocal
+        socket():
+            AF_INET: Tell OS I want an IPv4 socket
+            SOCK_STREAM: Tell OS I want reliable data transfer => TCP socket
+            0: use default protocal
     */
     int sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0) {
@@ -23,10 +24,10 @@ int main() {
 
     /*
         Bind to a port
-        sockaddr_in: socket address, internet version
-        sin_family: this socket uses IPv4
-        sin_port: sets port number for server to listen on (hardcoded at top)
-        sin_addr.s_addr: bind to all available network interfaces.
+        sockaddr_in addr: socket address, internet version
+            sin_family: this socket uses IPv4
+            sin_port: sets port number for server to listen on (hardcoded at top)
+            sin_addr.s_addr: bind to all available network interfaces.
     */
     struct sockaddr_in addr;
     addr.sin_family = AF_INET;
@@ -54,8 +55,12 @@ int main() {
 
     /*
         Accept a client
-        When a client calls connect on this port, it does the TCP 3 way handshake and wakes up the server
-        accept() returns the new socket dedicated to that client
+        When a client calls connect on this socket, it does the TCP 3 way handshake and wakes up the server.
+        Then we have a new socket that is created specifically for talking to the client (client_sock)
+        accept(): returns the new socket dedicated to that client
+            sock: the listening socket
+            NULL: we dont care what IP address we are connected to, so dont store it
+            NULL: we dont care about the IP address so dont give us its length either
     */
     int client_sock = accept(sock, NULL, NULL); // This accept() is actually where the program hangs untill there is a client
     if (client_sock < 0) {
@@ -66,7 +71,7 @@ int main() {
     printf("Client connected!\n");
 
     // Buffer for filename
-    char filename[81];   // 80 bytes + '\0'
+    char filename[81]; // 80 bytes + '\0'
     uint16_t seq, count;
 
     /*
@@ -112,9 +117,10 @@ int main() {
             fp: the file we are reading from
     */
     while (fgets(data_buf, sizeof(data_buf), fp) != NULL) {
-        int count = strlen(data_buf);
+        // How many bytes/characters we read fron the file (including "\n")
+        int data_len = strlen(data_buf);
 
-        if (send_packet(client_sock, seq_num, count, data_buf) < 0) {
+        if (send_packet(client_sock, seq_num, data_len, data_buf) < 0) {
             fprintf(stderr, "Error sending data packet\n");
             fclose(fp);
             close(client_sock);
@@ -122,10 +128,10 @@ int main() {
             exit(1);
         }
 
-        printf("Packet %d transmitted with %d data bytes\n", seq_num, count);
+        printf("Packet %d transmitted with %d data bytes\n", seq_num, data_len);
 
         total_packets++;
-        total_bytes += count;
+        total_bytes += data_len;
         seq_num++;
     }
 

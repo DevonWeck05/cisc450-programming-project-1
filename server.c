@@ -66,7 +66,7 @@ int main() {
     printf("Client connected!\n");
 
     // Buffer for filename
-    char filename[81];   // 80 bytes + null terminator
+    char filename[81];   // 80 bytes + '\0'
     uint16_t seq, count;
 
     /*
@@ -98,7 +98,53 @@ int main() {
     }
     printf("File opened successfully.\n");
 
-    // Close connection
+    uint16_t seq_num = 1; // sequence numbers start at 1 for data packets
+    int total_packets = 0; // for statistics
+    int total_bytes = 0; // for statistics
+
+    // MAX_DATA = 80 (bytes)
+    char data_buf[MAX_DATA + 1]; // +1 for safety if you want to null-terminate
+
+    /*
+        fgets(): read one line of file
+            data_buf: where to write the data from the line in file
+            sizeof(data_buf): how big data_buf is (so 81 bytes)
+            fp: the file we are reading from
+    */
+    while (fgets(data_buf, sizeof(data_buf), fp) != NULL) {
+        int count = strlen(data_buf);
+
+        if (send_packet(client_sock, seq_num, count, data_buf) < 0) {
+            fprintf(stderr, "Error sending data packet\n");
+            fclose(fp);
+            close(client_sock);
+            close(sock);
+            exit(1);
+        }
+
+        printf("Packet %d transmitted with %d data bytes\n", seq_num, count);
+
+        total_packets++;
+        total_bytes += count;
+        seq_num++;
+    }
+
+    // Send EOT packet
+    if (send_packet(client_sock, seq_num, 0, "") < 0) {
+        fprintf(stderr, "Error sending EOT packet\n");
+        fclose(fp);
+        close(client_sock);
+        close(sock);
+        exit(1);
+    }
+    printf("End of Transmission Packet with sequence number %d transmitted\n", seq_num);
+
+    // Print statistics
+    printf("Number of data packets transmitted: %d\n", total_packets);
+    printf("Total number of data bytes transmitted: %d\n", total_bytes);
+
+    // Close connections
+    fclose(fp);
     close(client_sock);
     close(sock);
 

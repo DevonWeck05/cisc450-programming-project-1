@@ -1,9 +1,10 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <arpa/inet.h>
-#include <sys/socket.h>
+#include "packet.h"
+#include <stdio.h> // prints and file i/o
+#include <stdlib.h> // exiton errors
+#include <unistd.h> // closing sockets
+#include <string.h> // memcpy packet headers
+#include <arpa/inet.h> // htons and ntohs and IPv4 addresses
+#include <sys/socket.h> // socket/bind/listen/accept/send/recv
 
 #define PORT 9000
 
@@ -45,28 +46,32 @@ int main() {
         close(sock);
         exit(1);
     }
-
     printf("Server listening on port %d...\n", PORT);
 
-    // ================================
-    // THE PROGRAM WAITS FOR A CLIENT 
-    // ================================
+    // ==========================
+    // PROGRAM WAITS FOR A CLIENT 
+    // ==========================
 
-    // Accept a client
+    /*
+        Accept a client
+        When a client calls connect on this port, it does the TCP 3 way handshake and wakes up the server
+        accept() returns the new socket dedicated to that client
+    */
     int client_sock = accept(sock, NULL, NULL); // This accept() is actually where the program hangs untill there is a client
     if (client_sock < 0) {
         perror("accept");
         close(sock);
         exit(1);
     }
-
-    // 5. Print confirmation
     printf("Client connected!\n");
 
-    // 6. Close connection
+    // =========================================
+    // REST OF SENDING PACKET LOGIC WILL GO HERE
+    // =========================================
+
+    // Close connection
     close(client_sock);
     close(sock);
 
-    // 7. Exit
     return 0;
 }

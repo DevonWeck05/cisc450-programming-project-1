@@ -22,6 +22,10 @@ int main() {
         exit(1); // couldn't create the socket
     }
 
+    // Even if the port is in TIME_WAIT, let me bind again.
+    int opt = 1;
+    setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+
     /*
         Bind to a port
         sockaddr_in addr: socket address, internet version

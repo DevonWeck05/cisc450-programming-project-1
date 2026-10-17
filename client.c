@@ -11,7 +11,7 @@
 #define OUTPUT_FILE "out.txt"    // these two includes pretty much just say, connect to local port 9000 and save the file as out.txt
 
 int main(void) {
-    // the "+ 2" helps us account for the \0 denoting the end of user input strings
+    // the "+ 2" helps us account for the enter (\n) and \0 denoting the end of user input strings
     char filename[MAX_DATA + 2];
 
     // prompts user for a filename
@@ -50,6 +50,7 @@ int main(void) {
         close(sock);
         return 1;
     }
+    
     // establish TCP connection, once again, value less than 0 denotes failure
     // passes in the socket we created, the server address, and the size of the address struct
     if (connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0) {

@@ -1,0 +1,23 @@
+Hello world!
+This is a test file.
+It has a few lines.
+End of file (normal section).
+
+
+
+Blank line above.
+Short
+A much longer line to ensure that your program handles lines of varying lengths correctly.
+Last line of the normal section.
+
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+
+This line comes after the 80-byte lines.
+Another normal line.
+
+ABC\x01\x02\x03\x7F\x80\xFF
+This line mixes printable and non-printable bytes.
+
+This file ends abruptly without a newline at the end

@@ -50,6 +50,7 @@ int main(void) {
         close(sock);
         return 1;
     }
+    
     // establish TCP connection, once again, value less than 0 denotes failure
     // passes in the socket we created, the server address, and the size of the address struct
     if (connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0) {

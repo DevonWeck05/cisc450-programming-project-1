@@ -1,3 +1,11 @@
+/*
+    client.c
+    Implements the TCP file client. The client connects to the server,
+    sends a filename request, receives packets in sequence, and writes
+    the received data to an output file. Validates packet size and order
+    and stops when the End‑of‑Transmission (EOT) packet is received.
+ */
+
 #include "packet.h"
 #include <stdio.h>       // printf(), fgets(), fopen(), fwrite()
 #include <string.h>      // strlen(), strcspn()
@@ -59,7 +67,7 @@ int main(void) {
         return 1;
     }
     // TCP connection does not fail (>0) meaning the connection was successful
-    printf("Connected to server\n");
+    // printf("Connected to server\n");
 
     // sends packet with the established connection, sequence # 0, filename length, and filename bytes (determined by user input)
     if (send_packet(sock, 0, (uint16_t)filename_len, filename) < 0) {
@@ -106,7 +114,7 @@ int main(void) {
 
         // a 0 byte packet indicates the end of transfer
         if (count == 0) {
-            printf("End of Transmission Packet with sequence number %u received\n",
+            printf("End of Transmission Packet with sequence number %u received with 0 data bytes\n",
                    (unsigned)seq);
             status = 0;
             break;
@@ -137,7 +145,6 @@ int main(void) {
     if (status == 0) {
         printf("Number of data packets received: %zu\n", total_packets);
         printf("Total number of data bytes received: %zu\n", total_bytes);
-        printf("File saved to %s\n", OUTPUT_FILE);
     } else if (out != NULL) {
         fprintf(stderr, "%s may contain an incomplete transfer\n", OUTPUT_FILE);
     }

@@ -1,3 +1,11 @@
+/*
+    server.c
+    Implements the TCP file server. The server listens on a fixed port,
+    receives a filename from the client, opens the requested file, and
+    sends its contents line‑by‑line as packets using the project protocol.
+    Ends transmission with a zero‑byte End‑of‑Transmission (EOT) packet.
+ */
+
 #include "packet.h"
 #include <stdio.h> // prints and file i/o
 #include <stdlib.h> // exit on errors
@@ -51,7 +59,7 @@ int main() {
         close(sock);
         exit(1);
     }
-    printf("Server listening on port %d...\n", PORT);
+    // printf("Server listening on port %d...\n", PORT);
 
     // ==========================
     // PROGRAM WAITS FOR A CLIENT 
@@ -72,7 +80,7 @@ int main() {
         close(sock);
         exit(1);
     }
-    printf("Client connected!\n");
+    // printf("Client connected!\n");
 
     // Buffer for filename
     char filename[81]; // 80 bytes + '\0'
@@ -95,7 +103,7 @@ int main() {
 
     // Null-terminate the filename (client sends no '\0')
     filename[count] = '\0';
-    printf("Filename received: %s\n", filename);
+    // printf("Filename received: %s\n", filename);
 
     // Open the requested file
     FILE *fp = fopen(filename, "r");
@@ -105,7 +113,7 @@ int main() {
         close(sock);
         exit(1);
     }
-    printf("File opened successfully.\n");
+    // printf("File opened successfully.\n");
 
     uint16_t seq_num = 1; // sequence numbers start at 1 for data packets
     int total_packets = 0; // for statistics
@@ -147,7 +155,7 @@ int main() {
         close(sock);
         exit(1);
     }
-    printf("End of Transmission Packet with sequence number %d transmitted\n", seq_num);
+    printf("End of Transmission Packet with sequence number %d transmitted with 0 data bytes\n", seq_num);
 
     // Print statistics
     printf("Number of data packets transmitted: %d\n", total_packets);

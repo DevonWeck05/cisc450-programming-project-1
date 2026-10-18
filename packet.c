@@ -1,3 +1,11 @@
+/*
+    packet.c
+    Implements the packet formatting and transmission logic for the project.
+    Provides send_packet() and recv_packet(), which handle the fixed 4‑byte
+    header (count, sequence number) and ensure all bytes are reliably sent
+    and received over a TCP stream using send_all() and recv_exact().
+ */
+
 #include "packet.h"
 #include <stddef.h> // size_t
 #include <stdint.h> // uint16_t => int that is 16 bits, or 2 bytes and unsigned

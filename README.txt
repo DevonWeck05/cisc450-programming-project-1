@@ -30,4 +30,4 @@ Group Information:
     Devon Weckherlen - ID: 702757732
         - Contribution: server.c, packet.c, packet.h, Makefile, README
     Achilles Demerutis - ID: 702753287
-        - Contribution: client.c, packet.c, README 
+        - Contribution: client.c, packet.c, README
